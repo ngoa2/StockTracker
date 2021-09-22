@@ -1,30 +1,47 @@
 <script>
-	export let name;
+	import StockList from "./Stocks/StockList.svelte";
+	let apiKey = "c556jkqad3iak9epgvr0";
+	let apiToken = "&token=" + apiKey;
+
+	let finnHubURL = "https://finnhub.io/api/v1/";
+	let searchInput = "";
+	let stocks = [
+		{ stockName: "Apple", tickerSymbol: "APPL" },
+		{ stockName: "Apple", tickerSymbol: "APPL" },
+	];
+	function addStock() {
+		stocks = [...stocks, searchInput];
+	}
+
+	function getStock() {
+		fetch(finnHubURL + "search?q=apple" + apiToken)
+			.then((res) => {
+				return res.json();
+			})
+			.then((data) => {
+				console.log(data);
+				let firstResult = data.result[0];
+				stocks;
+				console.log(firstResult.description);
+				console.log(firstResult.symbol);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+
+	// https://finnhub.io/api/v1/webhook/
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<h1>Stock Tracker</h1>
+	<input type="text" bind:value={searchInput} />
+	<button on:click={addStock}>Submit</button>
+	<button on:click={getStock}>Get Apple</button>
+	<p>Search Input: {searchInput}</p>
+	<StockList {stocks} />
 </main>
 
 <style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+	@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap");
 </style>
