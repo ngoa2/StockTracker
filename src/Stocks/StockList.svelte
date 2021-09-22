@@ -8,6 +8,10 @@
         <StockItem
             stockName={stock.stockName}
             tickerSymbol={stock.tickerSymbol}
+            price={stock.price}
+            dp={stock.dp}
+            change={stock.change}
+            on:delete
         />
     {/each}
 </section>
