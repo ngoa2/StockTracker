@@ -103,15 +103,13 @@
 	<input type="text" placeholder="Search" bind:value={searchInput} />
 	<button on:click={getStock}>Submit</button>
 
-	<div>
-		<section>
-			<StockList
-				stocks={$stocks}
-				on:delete={delStock}
-				on:update={updateStock}
-			/>
-		</section>
-	</div>
+	<section>
+		<StockList
+			stocks={$stocks}
+			on:delete={delStock}
+			on:update={updateStock}
+		/>
+	</section>
 </main>
 
 <style>
@@ -119,13 +117,14 @@
 		margin: 5rem;
 	}
 
-	div {
-		flex-direction: row;
-		flex: 1;
-		display: flex;
-	}
-
 	section {
 		margin-right: 5rem;
+		margin-top: 2rem;
+	}
+
+	button {
+		background-color: lightskyblue;
+		color: white;
+		border-radius: 5px;
 	}
 </style>

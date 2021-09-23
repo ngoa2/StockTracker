@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 
-let stocks = writable([{ stockName: "Test-la", tickerSymbol: "TEST", price: 999, change: 100, dp: .05 }]);
+let stocks = writable([]);
 
 const customStockStore = {
     subscribe: stocks.subscribe,
