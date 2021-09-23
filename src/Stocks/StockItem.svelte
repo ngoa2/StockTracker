@@ -1,6 +1,8 @@
 <script>
     import { createEventDispatcher } from "svelte";
     import Button from "../Components/Button.svelte";
+    import Fa from "svelte-fa";
+    import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
     const dispatch = createEventDispatcher();
 
     export let stockName;
@@ -22,7 +24,7 @@
                 caption="Update"
                 mode="update"
                 on:click={() => {
-                    dispatch("delete", stockName);
+                    dispatch("update", tickerSymbol);
                 }}
             />
             <Button
@@ -39,15 +41,21 @@
         <p id="price">${price}</p>
 
         {#if dp < 0}
-            <p class="percent-change negative-percent">{dp}%</p>
+            <div class="percent-change negative-percent">
+                <Fa icon={faArrowDown} size="xs" />
+                <p class="negative-change">{dp}%</p>
+            </div>
         {:else}
-            <p class="percent-change positive-percent">{dp}%</p>
+            <div class="percent-change positive-percent">
+                <Fa icon={faArrowUp} size="xs" />
+                <p class="positive-change">{dp}%</p>
+            </div>
         {/if}
 
         {#if change < 0}
-            <p class="change negative-change">{change}</p>
+            <p class="negative-change">{change}</p>
         {:else}
-            <p class="change positive-change">+{change}</p>
+            <p class="positive-change">+{change}</p>
         {/if}
     </div>
 </div>
@@ -60,10 +68,9 @@
         border: 1px solid lightgray;
         padding: 5px;
         border-radius: 15px;
-        width: 40rem;
+        width: 44rem;
     }
     p {
-        font-family: "Open Sans", Roboto, Arial, sans-serif;
         letter-spacing: 0;
         margin: 10px;
     }
@@ -94,7 +101,11 @@
         align-items: center;
     }
 
-    p.percent-change {
+    div.percent-change {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
         letter-spacing: 0.00625em;
         font-size: 1rem;
         font-weight: 500;
@@ -104,12 +115,19 @@
         width: min-content;
         background: #e6f4ea;
     }
-    p.negative-percent {
+
+    div.percent-change p {
+        margin-right: 0px;
+        margin-left: 5px;
+    }
+    div.negative-percent {
         background: #fce8e6;
+        color: #a50e0e;
     }
 
-    p.postive-percent {
+    div.positive-percent {
         background: #e6f4ea;
+        color: #137333;
     }
     p.negative-change {
         color: #a50e0e;

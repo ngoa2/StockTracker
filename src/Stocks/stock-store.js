@@ -19,9 +19,13 @@ const customStockStore = {
             return items.filter(stock => stock.stockName !== stockName);
         })
     },
-    updateStock: (updatedStock) => {
+    updateStock: (stockData, tickerSymbol) => {
         stocks.update(items => {
-            return items.find(stock => stock.stockName === updatedStock.stockName);
+            const stockIndex = items.findIndex(i => i.tickerSymbol === tickerSymbol);
+            const updatedStock = { ...items[stockIndex], ...stockData };
+            const updatedStockArr = [...items];
+            updatedStockArr[stockIndex] = updatedStock;
+            return updatedStockArr;
         })
     }
 }

@@ -1,6 +1,8 @@
 <script>
 	import StockList from "./Stocks/StockList.svelte";
 	import stocks from "./Stocks/stock-store";
+	import Header from "./Components/Header.svelte";
+	import StockDetails from "./Stocks/StockDetails.svelte";
 
 	let apiKey = "c556jkqad3iak9epgvr0";
 	let apiToken = "&token=" + apiKey;
@@ -40,17 +42,19 @@
 			});
 	}
 
-	function updateStock(tickerSymbol) {
-		let stockToUpdate = {};
+	function updateStock(event) {
+		let tickerSymbol = event.detail;
+		let stockData = {};
 		fetch(finnHubURL + "/quote?symbol=" + tickerSymbol + apiToken)
 			.then((res) => {
 				return res.json();
 			})
 			.then((data) => {
-				stockToUpdate.price = data.c;
-				stockToUpdate.dp = data.dp;
-				stockToUpdate.change = data.d;
-				stocks.updateStock(stockToUpdate);
+				stockData.price = data.c;
+				stockData.dp = data.dp;
+				stockData.change = data.d;
+				console.log(stockData);
+				stocks.updateStock(stockData, tickerSymbol);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -58,20 +62,70 @@
 	}
 
 	function delStock(event) {
-		console.log(event.detail);
 		stocks.deleteStock(event.detail);
+	}
+
+	let candleData = "empty";
+
+	function getDetails() {
+		let symbol = "AAPL";
+		fetch(
+			finnHubURL +
+				"/stock/candle?symbol=" +
+				symbol +
+				"&resolution=30&from=1631781202&to=1632299602" +
+				apiToken
+		)
+			.then((res) => {
+				return res.json();
+			})
+			.then((data) => {
+				candleData = data;
+				console.log(candleData);
+			})
+
+			.catch((err) => {
+				console.log(err);
+			});
 	}
 
 	// https://finnhub.io/api/v1/webhook/
 </script>
 
 <main>
-	<h1>Stock Tracker</h1>
-	<input type="text" bind:value={searchInput} />
+	<Header caption="Stock Tracker" />
+	<h2>Instructions:</h2>
+	<p>
+		Search for a stock by using the searchbar below, and hit submit to get
+		an up to date quote on it.
+	</p>
+
+	<input type="text" placeholder="Search" bind:value={searchInput} />
 	<button on:click={getStock}>Submit</button>
-	<p>Search Input: {searchInput}</p>
-	<StockList stocks={$stocks} on:delete={delStock} />
+
+	<div>
+		<section>
+			<StockList
+				stocks={$stocks}
+				on:delete={delStock}
+				on:update={updateStock}
+			/>
+		</section>
+	</div>
 </main>
 
 <style>
+	main {
+		margin: 5rem;
+	}
+
+	div {
+		flex-direction: row;
+		flex: 1;
+		display: flex;
+	}
+
+	section {
+		margin-right: 5rem;
+	}
 </style>

@@ -18,6 +18,11 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
-    "sirv-cli": "^1.0.0"
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "chart.js": "^3.5.1",
+    "lightweight-charts": "^3.6.1",
+    "sirv-cli": "^1.0.0",
+    "svelte-fa": "^2.3.3",
+    "svelte-lightweight-charts": "^1.1.1"
   }
 }

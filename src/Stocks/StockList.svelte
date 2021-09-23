@@ -12,6 +12,7 @@
             dp={stock.dp}
             change={stock.change}
             on:delete
+            on:update
         />
     {/each}
 </section>
@@ -22,6 +23,5 @@
         flex: 1;
         flex-direction: column;
         width: 100%;
-        margin: 1rem;
     }
 </style>
