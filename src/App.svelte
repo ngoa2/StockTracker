@@ -5,60 +5,60 @@
 	import StockDetails from "./Stocks/StockDetails.svelte";
 
 	let apiKey = "c556jkqad3iak9epgvr0";
-	let apiToken = "&token=" + apiKey;
+	let apiToken = `&token=${apiKey}`;
 
 	let finnHubURL = "https://finnhub.io/api/v1/";
 	let searchInput = "";
 
-	function getStock() {
-		let stockToAdd = {};
+	async function getStock() {
+		try {
+			const tickerSearchResponse = await fetch(
+				`${finnHubURL}search?q=${searchInput}${apiToken}`
+			);
 
-		fetch(finnHubURL + "search?q=" + searchInput + apiToken)
-			.then((res) => {
-				return res.json();
-			})
-			.then((data) => {
-				let firstResult = data.result[0];
-				let name = firstResult.description;
-				let symbol = firstResult.symbol;
+			const firstResultJson = await tickerSearchResponse.json();
+			const { description, symbol } = firstResultJson.result[0];
 
-				stockToAdd.stockName = name;
-				stockToAdd.tickerSymbol = symbol;
+			const stockQuoteResponse = await fetch(
+				`${finnHubURL}/quote?symbol=${symbol}${apiToken}`
+			);
 
-				return fetch(finnHubURL + "/quote?symbol=" + symbol + apiToken);
-			})
-			.then((res) => {
-				return res.json();
-			})
-			.then((data) => {
-				stockToAdd.price = data.c;
-				stockToAdd.dp = data.dp;
-				stockToAdd.change = data.d;
+			const stockQuoteJson = await stockQuoteResponse.json();
 
-				stocks.addStock(stockToAdd);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+			const stockToAdd = {
+				stockName: description,
+				tickerSymbol: symbol,
+				price: stockQuoteJson.c,
+				dp: stockQuoteJson.dp,
+				change: stockQuoteJson.d,
+			};
+
+			stocks.addStock(stockToAdd);
+		} catch (err) {
+			console.log(`App::getStock error: ${err}`);
+		}
 	}
 
-	function updateStock(event) {
+	async function updateStock(event) {
 		let tickerSymbol = event.detail;
-		let stockData = {};
-		fetch(finnHubURL + "/quote?symbol=" + tickerSymbol + apiToken)
-			.then((res) => {
-				return res.json();
-			})
-			.then((data) => {
-				stockData.price = data.c;
-				stockData.dp = data.dp;
-				stockData.change = data.d;
-				console.log(stockData);
-				stocks.updateStock(stockData, tickerSymbol);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+
+		try {
+			const stockQuoteResponse = await fetch(
+				`${finnHubURL}/quote?symbol=${tickerSymbol}${apiToken}`
+			);
+
+			const stockQuoteJson = await stockQuoteResponse.json();
+			const stockData = {
+				price: stockQuoteJson.c,
+				dp: stockQuoteJson.dp,
+				change: stockQuoteJson.d,
+			};
+			console.log(stockData);
+
+			stocks.updateStock(stockData, tickerSymbol);
+		} catch (err) {
+			console.log(`App::updateStock error: ${err}`);
+		}
 	}
 
 	function delStock(event) {
