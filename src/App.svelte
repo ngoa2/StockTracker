@@ -2,7 +2,6 @@
 	import StockList from "./Stocks/StockList.svelte";
 	import stocks from "./Stocks/stock-store";
 	import Header from "./Components/Header.svelte";
-	import StockDetails from "./Stocks/StockDetails.svelte";
 
 	let apiKey = "c556jkqad3iak9epgvr0";
 	let apiToken = `&token=${apiKey}`;
@@ -64,32 +63,6 @@
 	function delStock(event) {
 		stocks.deleteStock(event.detail);
 	}
-
-	let candleData = "empty";
-
-	function getDetails() {
-		let symbol = "AAPL";
-		fetch(
-			finnHubURL +
-				"/stock/candle?symbol=" +
-				symbol +
-				"&resolution=30&from=1631781202&to=1632299602" +
-				apiToken
-		)
-			.then((res) => {
-				return res.json();
-			})
-			.then((data) => {
-				candleData = data;
-				console.log(candleData);
-			})
-
-			.catch((err) => {
-				console.log(err);
-			});
-	}
-
-	// https://finnhub.io/api/v1/webhook/
 </script>
 
 <main>
